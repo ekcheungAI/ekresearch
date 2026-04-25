@@ -177,44 +177,40 @@ async function getIndexHost(indexName) {
 /**
  * Search research findings by semantic similarity
  */
-export async function searchResearch(
-  query,
-  topK = 5,
-  indexName = "ekresearch"
-  async search(query, topK = 5, indexName = "ekresearch") {
-    const host = await this.getIndexHost(indexName);
-    const embedding = this.generateEmbedding(query);
+export async function searchResearch(query, topK = 5, indexName = "ekresearch") {
+  const host = await getIndexHost(indexName);
+  const embedding = generateEmbedding(query);
 
-    const response = await fetch(
-      `https://${host}/query`,
-      {
-        method: "POST",
-        headers: {
-          "Api-Key": this.apiKey,
-          "X-Pinecone-API-Version": "2024-10",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          vector: embedding,
-          topK,
-          includeMetadata: true,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(`Pinecone query error: ${err.message || response.status}`);
+  const response = await fetch(
+    `https://${host}/query`,
+    {
+      method: "POST",
+      headers: {
+        "Api-Key": PINECONE_API_KEY,
+        "X-Pinecone-API-Version": "2024-10",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        vector: embedding,
+        topK,
+        includeMetadata: true,
+      }),
     }
+  );
 
-    const data = await response.json();
-    return (data.matches || []).map(m => ({
-      id: m.id,
-      score: m.score,
-      text: m.metadata?.text || "",
-      ...m.metadata,
-    }));
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(`Pinecone query error: ${err.message || response.status}`);
   }
+
+  const data = await response.json();
+  return (data.matches || []).map(m => ({
+    id: m.id,
+    score: m.score,
+    text: m.metadata?.text || "",
+    ...m.metadata,
+  }));
+}
 
   async getIndexHost(indexName) {
     const response = await fetch(`${this.baseUrl}/indexes/${indexName}`, {
@@ -235,27 +231,27 @@ export async function searchResearch(
 /**
  * Delete a vector by ID
  */
-  async delete(id, indexName = "ekresearch") {
-    const host = await this.getIndexHost(indexName);
-    const response = await fetch(
-      `https://${host}/vectors/delete`,
-      {
-        method: "POST",
-        headers: {
-          "Api-Key": this.apiKey,
-          "X-Pinecone-API-Version": "2024-10",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ids: [id] }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Pinecone delete error: ${response.status}`);
+export async function deleteResearch(id, indexName = "ekresearch") {
+  const host = await getIndexHost(indexName);
+  const response = await fetch(
+    `https://${host}/vectors/delete`,
+    {
+      method: "POST",
+      headers: {
+        "Api-Key": PINECONE_API_KEY,
+        "X-Pinecone-API-Version": "2024-10",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids: [id] }),
     }
+  );
 
-    return { success: true, id };
+  if (!response.ok) {
+    throw new Error(`Pinecone delete error: ${response.status}`);
   }
+
+  return { success: true, id };
+}
 
 // ─── Research Memory Management ───
 
