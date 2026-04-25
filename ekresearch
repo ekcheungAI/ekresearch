@@ -103,16 +103,18 @@ test_apis() {
     # Test Tavily
     echo -n "🔍 Tavily: "
     if node -e "
+        const key = '${TAVILY_API_KEY}';
         fetch('https://api.tavily.com/search', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                api_key: '${TAVILY_API_KEY}',
+                api_key: key,
                 query: 'test',
                 search_depth: 'basic',
                 max_results: 1
             })
-        }).then(r => r.ok ? console.log('✅ OK') : console.log('❌ Failed')).catch(e => console.log('❌ Error'))
+        }).then(r => r.ok ? console.log('Tavily: ✅ OK') : console.log('Tavily: ❌ Failed'))
+        .catch(e => console.log('Tavily: ❌ Error'))
     " 2>/dev/null | grep -q "OK"; then
         echo -e "${GREEN}✅ Connected${NC}"
     else
@@ -122,17 +124,19 @@ test_apis() {
     # Test Firecrawl
     echo -n "🔥 Firecrawl: "
     if node -e "
+        const key = '${FIRECRAWL_API_KEY}';
         fetch('https://api.firecrawl.dev/v1/scrape', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ${FIRECRAWL_API_KEY}'
+                'Authorization': 'Bearer ' + key
             },
             body: JSON.stringify({
                 url: 'https://example.com',
                 formats: ['markdown']
             })
-        }).then(r => r.ok || r.status === 400 ? console.log('✅ OK') : console.log('❌ Failed')).catch(e => console.log('❌ Error'))
+        }).then(r => r.ok || r.status === 400 ? console.log('Firecrawl: ✅ OK') : console.log('Firecrawl: ❌ Failed'))
+        .catch(e => console.log('Firecrawl: ❌ Error'))
     " 2>/dev/null | grep -q "OK"; then
         echo -e "${GREEN}✅ Connected${NC}"
     else
@@ -142,9 +146,11 @@ test_apis() {
     # Test TwitterAPI.io
     echo -n "🐦 TwitterAPI.io: "
     if node -e "
+        const key = '${TWITTERAPI_IO_KEY}';
         fetch('https://api.twitterapi.io/twitter/tweet/advanced_search?query=test&queryType=Latest', {
-            headers: {'x-api-key': '${TWITTERAPI_IO_KEY}'}
-        }).then(r => r.ok ? console.log('✅ OK') : console.log('❌ Failed')).catch(e => console.log('❌ Error'))
+            headers: {'x-api-key': key}
+        }).then(r => r.ok ? console.log('Twitter: ✅ OK') : console.log('Twitter: ❌ Failed'))
+        .catch(e => console.log('Twitter: ❌ Error'))
     " 2>/dev/null | grep -q "OK"; then
         echo -e "${GREEN}✅ Connected${NC}"
     else
