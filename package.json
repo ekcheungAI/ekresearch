@@ -1,0 +1,38 @@
+{
+  "name": "ekresearch",
+  "version": "1.0.0",
+  "description": "Golden Standard Research System — Multi-source research combining Tavily, Firecrawl, and TwitterAPI.io",
+  "main": "scripts/unified-research.mjs",
+  "type": "module",
+  "scripts": {
+    "research": "node scripts/unified-research.mjs",
+    "twitter": "node scripts/twitterapi-client.mjs",
+    "tavily": "node scripts/tavily-research.mjs",
+    "firecrawl": "node scripts/firecrawl-basic-research.mjs",
+    "test": "node tests/live-test.mjs"
+  },
+  "dependencies": {
+    "@firecrawl/agent-core": "^1.0.0",
+    "firecrawl-aisdk": "^1.0.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "research",
+    "web-scraping",
+    "twitter",
+    "x",
+    "firecrawl",
+    "tavily",
+    "ai",
+    "data-extraction"
+  ],
+  "author": "EK Research",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ekcheungAI/ekresearch.git"
+  }
+}
